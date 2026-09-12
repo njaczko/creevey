@@ -250,6 +250,12 @@ CA
                                     <action selector="doShowFilenames:" target="207" id="856"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Show Image Dates" tag="252" id="eXy-8A-v1D">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="doShowImageDates:" target="207" id="bQw-2F-k9R"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="859"/>
                             <menuItem title="Auto-Rotate by Orientation Tag" tag="261" id="860">
                                 <modifierMask key="keyEquivalentModifierMask"/>

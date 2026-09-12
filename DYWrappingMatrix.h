@@ -75,6 +75,7 @@
 @property (nonatomic) float cellWidth;
 
 @property (nonatomic) BOOL showFilenames;
+@property (nonatomic) BOOL showImageDates;
 @property (nonatomic) BOOL autoRotate;
 
 // these return nonmutable copies of arrays and should each be called once when moveElsewhere is called

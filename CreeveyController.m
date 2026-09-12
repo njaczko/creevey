@@ -157,6 +157,7 @@ NSMutableAttributedString* Fileinfo2EXIFString(NSString *origPath, DYImageCache 
 		@"slideshowWindowFitToImage": @NO,
 		@"exifThumbnailShow": @NO,
 		@"showFilenames": @YES,
+		@"showImageDates": @NO,
 		@"sortBy": @1, // sort by filename, ascending
 		@"Slideshow:RerandomizeOnLoop": @YES,
 		@"SlideshowSuppressLoopIndicator": @NO,
@@ -951,6 +952,7 @@ enum {
 	SORT_SIZE,
 	SORT_FILEPATH,
 	SHOW_FILE_NAMES = 251,
+	SHOW_IMAGE_DATES = 252,
 	AUTO_ROTATE = 261,
 	SLIDESHOW_MENU = 1001,
 	VIEW_MENU = 200,
@@ -1027,6 +1029,7 @@ enum {
 		case GET_INFO:
 		case SORT_NAME:
 		case SHOW_FILE_NAMES:
+		case SHOW_IMAGE_DATES:
 			return !slidesWindow.isMainWindow;
 		default:
 			return YES;
@@ -1064,11 +1067,26 @@ enum {
 
 - (IBAction)doShowFilenames:(id)sender {
 	BOOL b = !frontWindow.imageMatrix.showFilenames;
-	NSMenuItem *item = sender;
-	item.state = b;
 	frontWindow.imageMatrix.showFilenames = b;
-	if (creeveyWindows.count == 1) // save as default if this is the only window
+	if (creeveyWindows.count == 1) { // save as default if this is the only window
 		[NSUserDefaults.standardUserDefaults setBool:b forKey:@"showFilenames"];
+		[NSUserDefaults.standardUserDefaults setBool:frontWindow.imageMatrix.showImageDates forKey:@"showImageDates"];
+	}
+	NSMenu *m = [NSApp.mainMenu itemWithTag:VIEW_MENU].submenu;
+	[m itemWithTag:SHOW_FILE_NAMES].state = frontWindow.imageMatrix.showFilenames;
+	[m itemWithTag:SHOW_IMAGE_DATES].state = frontWindow.imageMatrix.showImageDates;
+}
+
+- (IBAction)doShowImageDates:(id)sender {
+	BOOL b = !frontWindow.imageMatrix.showImageDates;
+	frontWindow.imageMatrix.showImageDates = b;
+	if (creeveyWindows.count == 1) { // save as default if this is the only window
+		[NSUserDefaults.standardUserDefaults setBool:frontWindow.imageMatrix.showFilenames forKey:@"showFilenames"];
+		[NSUserDefaults.standardUserDefaults setBool:b forKey:@"showImageDates"];
+	}
+	NSMenu *m = [NSApp.mainMenu itemWithTag:VIEW_MENU].submenu;
+	[m itemWithTag:SHOW_FILE_NAMES].state = frontWindow.imageMatrix.showFilenames;
+	[m itemWithTag:SHOW_IMAGE_DATES].state = b;
 }
 
 - (IBAction)doAutoRotateDisplayedImage:(id)sender {
@@ -1319,6 +1337,7 @@ static void SendAction(NSMenuItem *sender) {
 	short int sortOrder = [NSUserDefaults.standardUserDefaults integerForKey:@"sortBy"];
 	wc.sortOrder = sortOrder;
 	wc.imageMatrix.showFilenames = [NSUserDefaults.standardUserDefaults boolForKey:@"showFilenames"];
+	wc.imageMatrix.showImageDates = [NSUserDefaults.standardUserDefaults boolForKey:@"showImageDates"];
 	wc.imageMatrix.autoRotate = [NSUserDefaults.standardUserDefaults boolForKey:@"autoRotateByOrientationTag"];
 	if (needsPath)
 		[wc setDefaultPath];
@@ -1327,6 +1346,7 @@ static void SendAction(NSMenuItem *sender) {
 	NSMenu *m = [NSApp.mainMenu itemWithTag:VIEW_MENU].submenu;
 	[self updateMenuItemsForSorting:sortOrder];
 	[m itemWithTag:SHOW_FILE_NAMES].state = wc.imageMatrix.showFilenames ? NSControlStateValueOn : NSControlStateValueOff;
+	[m itemWithTag:SHOW_IMAGE_DATES].state = wc.imageMatrix.showImageDates ? NSControlStateValueOn : NSControlStateValueOff;
 	[m itemWithTag:AUTO_ROTATE].state = wc.imageMatrix.autoRotate ? NSControlStateValueOn : NSControlStateValueOff;
 }
 
@@ -1363,6 +1383,7 @@ static void SendAction(NSMenuItem *sender) {
 	NSMenu *m = [NSApp.mainMenu itemWithTag:VIEW_MENU].submenu;
 	[self updateMenuItemsForSorting:sortOrder];
 	[m itemWithTag:SHOW_FILE_NAMES].state = frontWindow.imageMatrix.showFilenames ? NSControlStateValueOn : NSControlStateValueOff;
+	[m itemWithTag:SHOW_IMAGE_DATES].state = frontWindow.imageMatrix.showImageDates ? NSControlStateValueOn : NSControlStateValueOff;
 	[m itemWithTag:AUTO_ROTATE].state = frontWindow.imageMatrix.autoRotate ? NSControlStateValueOn : NSControlStateValueOff;
 }
 

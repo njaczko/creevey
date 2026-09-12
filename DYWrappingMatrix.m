@@ -101,6 +101,7 @@ static NSRect ScaledCenteredRect(NSSize sourceSize, NSRect boundsRect) {
 	NSMutableIndexSet *selectedIndexes;
 	
 	BOOL dragEntered;
+	BOOL showFilenames, showImageDates;
 	
 	// vars used for repeated calculations
 	int numCols;
@@ -364,16 +365,33 @@ static NSRect ScaledCenteredRect(NSSize sourceSize, NSRect boundsRect) {
 #pragma mark filename stuff
 
 - (BOOL)showFilenames {
-	return textHeight > 0;
+	return showFilenames;
 }
 - (void)setShowFilenames:(BOOL)b {
+	if (showFilenames == b && (!b || !showImageDates)) return;
+	showFilenames = b;
+	if (b) showImageDates = NO;
+	[self updateCaptionVisibility];
+}
+
+- (BOOL)showImageDates {
+	return showImageDates;
+}
+- (void)setShowImageDates:(BOOL)b {
+	if (showImageDates == b && (!b || !showFilenames)) return;
+	showImageDates = b;
+	if (b) showFilenames = NO;
+	[self updateCaptionVisibility];
+}
+
+- (void)updateCaptionVisibility {
 	// preserve the scrollpoint relative to the top left visible thumbnail
 	NSPoint mouseLoc = [self convertPoint:NSMakePoint(1, 1) fromView:self.enclosingScrollView]; // for some reason NSZeroPoint isn't quite right...
 	NSInteger row = (NSInteger)mouseLoc.y/area_h;
 	float dy = mouseLoc.y - area_h*row;
 
-	// show/hide filenames
-	if (b) {
+	// show/hide captions
+	if (showFilenames || showImageDates) {
 		textHeight = DEFAULT_TEXTHEIGHT;
 	} else {
 		textHeight = 0;
@@ -671,7 +689,7 @@ static NSRect ScaledCenteredRect(NSSize sourceSize, NSRect boundsRect) {
 		}
 		
 		if (textHeight) {
-			myTextCell.stringValue = _respondsToLabelForFile
+			myTextCell.stringValue = showImageDates && _respondsToLabelForFile
 				? [delegate wrappingMatrixLabelForFile:filename]
 				: filename.lastPathComponent;
 			[myTextCell drawInteriorWithFrame:textCellRect inView:self];

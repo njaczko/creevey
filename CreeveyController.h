@@ -50,6 +50,7 @@ NSDirectoryEnumerator *CreeveyEnumerator(NSString *path, BOOL recurseSubfolders)
 - (IBAction)transformJpeg:(id)sender;
 - (IBAction)sortThumbnails:(id)sender;
 - (IBAction)doShowFilenames:(id)sender;
+- (IBAction)doShowImageDates:(id)sender;
 - (IBAction)doAutoRotateDisplayedImage:(id)sender;
 
 - (void)slideshowFromAppOpen:(NSArray *)files;
