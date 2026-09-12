@@ -37,3 +37,19 @@ Branch xcode326 will compile a universal binary with PPC support but requires Xc
 `creevey` was the code name for Phoenix Slides when I first started developing it
 and code names were cool.
 Colin Creevey is the kid in Harry Potter who keeps taking pictures.
+
+## njaczko's Fork Notes
+
+This repo was forked from [gobbledegook/creevey](https://github.com/gobbledegook/creevey) to:
+
+1. Add a `Show Image Dates` option, similar to `Show File Names`, that will show
+   each photo's capture date below thumbnails in the gallery.
+2. Make `Subfolders` enabled by default.
+3. Add a Makefile for building and running the application locally.
+
+The `njaczko` branch contains those changes. Aside from this README change, the
+`master` branch on this fork is intended to stay in sync with the `master`
+branch on gobbledegook/creevey.
+
+The changes have only been tested on my Mac... but they works for me. The Xcode
+app needs to be installed from the Mac App Store to satisfy the xcode dependencies.
