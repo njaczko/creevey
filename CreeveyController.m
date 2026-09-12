@@ -156,8 +156,8 @@ NSMutableAttributedString* Fileinfo2EXIFString(NSString *origPath, DYImageCache 
 		@"transparentImageBgColor": [NSKeyedArchiver archivedDataWithRootObject:NSColor.clearColor requiringSecureCoding:YES error:NULL],
 		@"slideshowWindowFitToImage": @NO,
 		@"exifThumbnailShow": @NO,
-		@"showFilenames": @YES,
-		@"showImageDates": @NO,
+		@"showFilenames": @NO,
+		@"showImageDates": @YES,
 		@"sortBy": @1, // sort by filename, ascending
 		@"Slideshow:RerandomizeOnLoop": @YES,
 		@"SlideshowSuppressLoopIndicator": @NO,

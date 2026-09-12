@@ -240,6 +240,7 @@ typedef struct {
 	
 	dirBrowserDelegate = dirBrowser.delegate;
 	dirBrowserDelegate.revealedDirectories = appDelegate.revealedDirectories;
+	self.wantsSubfolders = (_subfoldersButton.state == NSControlStateValueOn);
 
 	_brokenDoc = [NSImage imageNamed:@"brokendoc.tif"];
 	_loadingImage = [NSImage imageNamed:@"loading.png"];
@@ -825,7 +826,9 @@ NSComparator ComparatorForSortOrder(short sortOrder) {
 	NSString *currentPath = [dirBrowserDelegate path];
 	_subfoldersButton.enabled = ![currentPath isEqualToString:@"/"]; // let's not ever load up the entire file system
 	if (self.wantsSubfolders && sender) { // sender is dirBrowserDelegate when non-nil
-		if (![currentPath hasPrefix:_recurseRoot]) {
+		if (_recurseRoot == nil) {
+			self.recurseRoot = [currentPath.stringByDeletingLastPathComponent stringByAppendingString:@"/"];
+		} else if (![currentPath hasPrefix:_recurseRoot]) {
 			self.wantsSubfolders = NO;
 			_subfoldersButton.state = NSControlStateValueOff;
 		}

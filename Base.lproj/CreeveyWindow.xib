@@ -69,7 +69,7 @@ DQ
                                     </customView>
                                     <button toolTip="Search all subfolders for images (slower)." horizontalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="370">
                                         <rect key="frame" x="272" y="7" width="98" height="16"/>
-                                        <buttonCell key="cell" type="check" title="Subfolders ⌘F" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="517">
+                                        <buttonCell key="cell" type="check" title="Subfolders ⌘F" bezelStyle="regularSquare" imagePosition="left" state="on" alignment="left" controlSize="small" inset="2" id="517">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="smallSystem"/>
                                             <string key="keyEquivalent">f</string>
