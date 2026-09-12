@@ -167,6 +167,7 @@ typedef struct {
 @implementation CreeveyMainWindowController
 {
 	NSMutableArray *filenames, *displayedFilenames;
+	NSMutableDictionary<NSString *, NSString *> *thumbnailDateLabels;
 	NSLock *loadImageLock; NSTimeInterval lastThreadTime;
 	CreeveyController * __weak appDelegate;
 	DirBrowserDelegate * __weak dirBrowserDelegate;
@@ -201,6 +202,7 @@ typedef struct {
 	if (self = [super initWithWindowNibName:windowNibName]) {
 		filenames = [[NSMutableArray alloc] init];
 		displayedFilenames = [[NSMutableArray alloc] init];
+		thumbnailDateLabels = [[NSMutableDictionary alloc] init];
 		loadImageLock = [[NSLock alloc] init];
 		filesBeingOpened = [[NSMutableSet alloc] init];
 		sortOrder = 1; // by name
@@ -500,6 +502,7 @@ NSComparator ComparatorForSortOrder(short sortOrder) {
 
 - (void)fileWasChanged:(NSString *)s {
 	if (![self pathIsCurrentDirectory:s]) return;
+	[thumbnailDateLabels removeObjectForKey:s];
 	// update thumb
 	DYImageCache *thumbsCache = appDelegate.thumbsCache;
 	NSString *theFile = ResolveAliasToPath(s);
@@ -538,12 +541,25 @@ NSComparator ComparatorForSortOrder(short sortOrder) {
 		[thumbsCache endAccess:theFile];
 	}
 }
+
+- (NSString *)wrappingMatrixLabelForFile:(NSString *)filename {
+	NSString *label = thumbnailDateLabels[filename];
+	if (label != nil) return label;
+
+	time_t imageDate = ExifDateFromFile(filename);
+	label = imageDate == -1 ? @"" : [NSDateFormatter localizedStringFromDate:[NSDate dateWithTimeIntervalSince1970:imageDate]
+													 dateStyle:NSDateFormatterMediumStyle
+													 timeStyle:NSDateFormatterNoStyle];
+	thumbnailDateLabels[filename] = label;
+	return label;
+}
 	
 - (void)fileWasDeleted:(NSString *)s {
 	[self fileWasDeleted:s atIndex:NSNotFound];
 }
 - (void)fileWasDeleted:(NSString *)s atIndex:(NSUInteger)i {
 	if (![self pathIsCurrentDirectory:s]) return;
+	[thumbnailDateLabels removeObjectForKey:s];
 	BOOL linearSearch = abs(self.sortOrder) != 1;
 	NSUInteger mtrxIdx;
 	if (i == NSNotFound) {
@@ -801,6 +817,7 @@ NSComparator ComparatorForSortOrder(short sortOrder) {
 
 - (IBAction)displayDir:(id)sender {
 	stopCaching = 1;
+	[thumbnailDateLabels removeAllObjects];
 	currentFilesDeletable = NO;
 	filenamesDone = NO;
 	currCat = 0;

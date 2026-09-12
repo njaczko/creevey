@@ -92,7 +92,7 @@ static NSRect ScaledCenteredRect(NSSize sourceSize, NSRect boundsRect) {
 	NSColor *bgColor;
 	BOOL autoRotate;
 	NSImageCell *myCell;           // one cell, reused for efficiency
-	NSTextFieldCell *myTextCell; // for drawing the file name
+	NSTextFieldCell *myTextCell; // for drawing the image date
 	NSMutableArray *images;
 	NSMutableArray *filenames;
 	NSMutableSet *requestedFilenames; // keep track of which files we've requested images for
@@ -110,7 +110,7 @@ static NSRect ScaledCenteredRect(NSSize sourceSize, NSRect boundsRect) {
 	float _maxCellWidth;
 	float _hPadding, _vPadding;
 	NSSize _contentSize;
-	BOOL _respondsToLoadImageForFile, _respondsToSelectionDidChange;
+	BOOL _respondsToLoadImageForFile, _respondsToSelectionDidChange, _respondsToLabelForFile;
 	NSMutableArray *_movedUrls, *_originPaths;
 	id __weak _appDelegate;
 }
@@ -208,6 +208,7 @@ static NSRect ScaledCenteredRect(NSSize sourceSize, NSRect boundsRect) {
 																 context:NULL];
 	_respondsToLoadImageForFile = [delegate respondsToSelector:@selector(wrappingMatrixWantsImageForFile:atIndex:)];
 	_respondsToSelectionDidChange = [delegate respondsToSelector:@selector(wrappingMatrixSelectionDidChange:)];
+	_respondsToLabelForFile = [delegate respondsToSelector:@selector(wrappingMatrixLabelForFile:)];
 	_appDelegate = NSApp.delegate;
 }
 
@@ -670,7 +671,9 @@ static NSRect ScaledCenteredRect(NSSize sourceSize, NSRect boundsRect) {
 		}
 		
 		if (textHeight) {
-			myTextCell.stringValue = filename.lastPathComponent;
+			myTextCell.stringValue = _respondsToLabelForFile
+				? [delegate wrappingMatrixLabelForFile:filename]
+				: filename.lastPathComponent;
 			[myTextCell drawInteriorWithFrame:textCellRect inView:self];
 		}
 	}

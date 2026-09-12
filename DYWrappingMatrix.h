@@ -87,7 +87,7 @@
 - (void)moveElsewhere; // moving a file to the Finder will call this
 - (void)wrappingMatrixSelectionDidChange:(NSIndexSet *)s;
 - (NSImage *)wrappingMatrixWantsImageForFile:(NSString *)filename atIndex:(NSUInteger)i;
+- (NSString *)wrappingMatrixLabelForFile:(NSString *)filename;
 - (unsigned short)exifOrientationForFile:(NSString *)s;
 @property (readonly) NSMenu *thumbnailContextMenu;
 @end
-
